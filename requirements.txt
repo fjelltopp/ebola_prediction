@@ -1,0 +1,7 @@
+Flask==1.0.2
+Flask-SQLAlchemy==2.1
+pandas
+numpy
+schedule
+scipy
+altair

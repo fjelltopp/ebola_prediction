@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <!-- Import Vega 4 & Vega-Lite 2 (does not have to be from CDN) -->
+    <meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://cdn.jsdelivr.net/npm/vega@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#596074">
+      <div class="container">
+        <div class="logo">
+          <img src="/static/img/FjelltoppColour.png" height="40"></img>
+	  <a class="navbar-brand" href="#" style="color: white">Ebola outbreak in North Kivu</a>
+	</div>
+    </nav>
+    <div class="container">'
+      <p> This site contains up todate data on the current Ebola outbreak in North Kivu in the Democratic republic in Congo. The data is collected by the MoH in DRC and is available from the <a href="https://data.humdata.org/dataset/ebola-cases-and-deaths-drc-north-kivu"> hummanitarian data exchange</a>. The data was updated at the {{date}}. </p>
+      <div class="row">
+	<div class="col-sm-6">
+	  <div id="chart">
+	  </div>
+	  <div id="cfr_chart">
+	  </div>
+
+	</div>
+	<div class ="col-sm-6">
+	  <div id="R_chart">
+	  </div>
+	  <div id="pred_chart">
+	  </div>
+
+	</div>
+      </div>
+
+      <h2> Explanations </h2>
+      <p>
+	We use a mathematical model to estimate the reproduction number and to predict the future cases. A more detailed explanation of the model follows below. </p>
+	<p>
+	The reproductive number, R,  of a disease tells us how many new cases one case will infect. It depends on many factors, but gives us an idea of how the disease is progressing. When R is less than one we expect the outbreak to die out and when R is greater than one we expect the outbreak to continue. The larger R is the more cases we would expect in the future. The estimation of R above is based on work by <a href="https://www.ncbi.nlm.nih.gov/pubmed/24043437"> Cori et al 2013</a> </p>
+      
+      <p> We use the mathematical model of the disease to predict the expected number of cases of ebola over the next 3 weeks. We take the latest estimated reproduction number and use that to simulate 1000 possible ways the number of cases could increase over the next weeks. The summary of the simulations are shown in the chart above. </p>
+
+      <h2> Mathematica Model </h2>
+      <p> Details will be added soon </p>
+
+      <h2> Open Source Code </h2>
+      All the source code for this application is open source and available <a href="https://github.com/fjelltopp/ebola_prediction"> here </a>.
+      <h3> 
+    </div>
+    <footer class="page-footer font-small" style="background-color:#596074">
+
+      
+      <!-- Copyright -->
+      <div class="footer-copyright text-center py-3"style="color: white" >Developed by 
+	<a href="http://fjelltopp.org" style="color: #96adc8"> Fjelltopp</a>
+	</div>
+	<!-- Copyright -->
+
+      </footer>	
+      
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+
+  <script type="text/javascript">
+   var opt = {
+     mode: "vega-lite",
+     renderer: "svg",
+     actions: {export: false, source: false, editor: false}
+   };
+   vegaEmbed("#chart", {{cumulative_chart|safe}}, opt );
+   vegaEmbed("#R_chart", {{estimated_r|safe}}, opt);
+   vegaEmbed("#pred_chart", {{prediction_chart|safe}}, opt);
+   vegaEmbed("#cfr_chart", {{cfr_chart|safe}}, opt);
+   
+  </script>
+
+</html>

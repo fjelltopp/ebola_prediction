@@ -1,0 +1,25 @@
+version: '3'
+services:
+  app:
+    build:
+      dockerfile: ./docker/app/Dockerfile
+      context: ../
+    restart: always
+    volumes:
+      - ../ebola_prediction:/var/www/ebola_prediction
+
+  nginx:
+    build:
+      context: ../
+      dockerfile: ./docker/nginx/Dockerfile
+    environment:
+      - "SSL_CERTIFICATE=/etc/nginx/self-signed-nginx.crt"
+      - "SSL_CERTIFICATE_KEY=/etc/nginx/self-signed-nginx.key"
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - app
+    hostname: nest_nginx
+    command: /bin/run.sh
+    restart: always

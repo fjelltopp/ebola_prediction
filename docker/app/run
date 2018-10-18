@@ -1,0 +1,7 @@
+#!/bin/bash
+
+python model.py
+
+python data_preparer.py &
+
+uwsgi --ini /var/www/uwsgi/app.ini --py-autoreload 1
