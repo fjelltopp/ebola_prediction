@@ -10,9 +10,7 @@ from model import DataSource
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine)
-session = Session()
+
 
 
 data_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrr9DRaC2fXzPdmOxLW-egSYtxmEp_RKoYGggt-zOKYXSx4RjPsM4EO19H7OJVX1esTtIoFvlKFWcn/pub?gid=1564028913&single=true&output=csv"
@@ -40,6 +38,10 @@ def get_incidence(cumulative_cases):
 
 
 def get_and_predict():
+    print("Get and predict for ebola")
+    engine = create_engine(DATABASE_URL)
+    Session = sessionmaker(bind=engine)
+    session = Session()
     data = pd.read_csv(data_url, skiprows=[1],
                        parse_dates=["report_date", "publication_date"])
     cases_by_time = data.groupby("report_date").sum()
@@ -102,34 +104,38 @@ def nice_variables(var):
 
 class EbolaWrapper():
 
-    def __init__(self):
+    def __init__(self, db):
         self.charts = {"cases_by_time": self.chart_cases_by_time,
                        "estimated_r": self.chart_estimated_r,
                        "predicted_cases": self.predicted_cases,
                        "cfr": self.chart_cfr}
-
+        self.db = db
         self.latest_id = 0
         self.latest_time = None
         data = self.get_latest_data()
         self.prepare_data(data)
 
     def get_latest_data(self):
-        res = session.query(DataSource).order_by(DataSource.id.desc()).limit(1)
+        res = self.db.session.query(DataSource).order_by(DataSource.id.desc()).limit(1)
         record = res[0]
         if record.id == self.latest_id:
             return None
         self.latest_id = record.id
         self.latest_time = record.update_time
         return json.loads(record.data)
-
+    
     def prepare_data(self, data):
-        self.cases_by_time = pd.read_sql(data["cases_by_time"], engine).reset_index()
+        self.cases_by_time = pd.read_sql(data["cases_by_time"],
+                                         self.db.engine).reset_index()
         self.cases_by_time_melted = self.cases_by_time.melt("report_date")
         self.cases_by_time_melted["variable"] = self.cases_by_time_melted["variable"].map(nice_variables)
-        self.estimated_r = pd.read_sql(data["estimate_r"], engine)
-        self.predictions = pd.read_sql(data["predictions"], engine)
+        self.estimated_r = pd.read_sql(data["estimate_r"], self.db.engine)
+        self.predictions = pd.read_sql(data["predictions"], self.db.engine)
 
     def chart(self, chart_name):
+        new_data = self.get_latest_data()
+        if new_data:
+            self.prepare_data(new_data)
         return self.charts[chart_name]()
     
     def json_chart(self, chart_name):
@@ -155,7 +161,6 @@ class EbolaWrapper():
     def chart_cfr(self):
         data = self.cases_by_time
         data["cfr"] = data["total_deaths"] / data["total_cases"] * 100
-        print(data["cfr"])
         chart = alt.Chart(
             data, title="Case Fatality Ratio", width=500, height=300).mark_circle().encode(
                 alt.X("report_date:T", axis=alt.Axis(title='Date Reported')),
@@ -191,6 +196,6 @@ class EbolaWrapper():
         )
         return chart
 
-
+    
 if __name__ == "__main__":
     get_and_predict()

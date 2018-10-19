@@ -1,12 +1,12 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, render_template
 from ebola_data import EbolaWrapper
-
-EW = EbolaWrapper()
-
-print("hei")
-
+from flask_sqlalchemy import SQLAlchemy
+import config
 app = Flask(__name__)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URL
+db = SQLAlchemy(app)
+EW = EbolaWrapper(db)
 
 @app.route("/")
 def ebola():
