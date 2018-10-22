@@ -52,7 +52,7 @@ def estimated_r(incidence, force_of_infection, serial_dist, prior=(1,5), start_d
         posterior_a.append(a)
         posterior_b.append(b)
         mean_r.append(stats.gamma.mean(a=a, scale=b))
-        l, u = stats.gamma.interval(0.95, a=a, scale=b)
+        l, u = stats.gamma.interval(0.90, a=a, scale=b)
         upper.append(u)
         lower.append(l)
     return (mean_r, lower, upper, posterior_a, posterior_b)

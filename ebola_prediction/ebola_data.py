@@ -1,3 +1,4 @@
+
 import pandas as pd
 import altair as alt
 import datetime
@@ -149,7 +150,7 @@ class EbolaWrapper():
         )
         confidence_interval = alt.Chart(
             data,
-            title="Predicted number of Ebola cases",
+            title="Predicted Number of Ebola Cases",
             width=500, height=300).mark_area(opacity=0.3).encode(
                 x=alt.Y('date', axis=alt.Axis(title='Date Reported')),
                 y=alt.Y('cumulative_incidence_lower', axis=alt.Axis(title="Number")),
@@ -189,7 +190,7 @@ class EbolaWrapper():
         data = self.cases_by_time_melted[self.cases_by_time_melted["variable"].isin(
             ["Total Cases", "Total Deaths"])]
         chart = alt.Chart(
-            data, title="Ebola cases and deaths", width=500, height=300).mark_circle().encode(
+            data, title="Ebola Cases and Deaths", width=500, height=300).mark_circle().encode(
             alt.X("report_date:T", axis=alt.Axis(title='Date Reported')),
             alt.Y('value:Q', axis=alt.Axis(title='Number')),
             color=alt.Color('variable', legend=alt.Legend(title="", orient="top-left"))
