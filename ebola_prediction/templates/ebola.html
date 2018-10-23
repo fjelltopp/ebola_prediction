@@ -24,7 +24,7 @@
 	</div>
     </nav>
     <div class="container" style="margin-top: 20">
-      <p> This site contains up-to-date data on the current Ebola outbreak in North Kivu in the Democratic Republic of Congo. The data is collected by the MoH in DRC and is available from the <a href="https://data.humdata.org/dataset/ebola-cases-and-deaths-drc-north-kivu"> humanitarian data exchange</a>. Data until the {{date}} is currently available.</p>
+      <p> This site contains up-to-date data on the current Ebola outbreak in North Kivu in the Democratic Republic of Congo. The data is collected by the MoH in DRC and is available from the <a href="https://data.humdata.org/dataset/ebola-cases-and-deaths-drc-north-kivu"> humanitarian data exchange</a>. Data until {{date}} is currently available.</p>
       <div class="row">
 	<div class="col-sm-6">
 	  <div id="chart">
@@ -44,15 +44,15 @@
 
       <h2> Explanations </h2>
       <p>
-	We use a mathematical model to estimate the reproduction number and to predict the future cases. A more detailed explanation of the model follows below. For the plots of the estimated reproduction number and for the forcast we show 90% creadible regions.</p>
+	We use a mathematical model to estimate the reproduction number and to predict the future cases. A more detailed explanation of the model follows below. For the plots of the estimated reproduction number and for the forecast we show 90% credible regions.</p>
 	<p>
-	The reproductive number, \(R\),  of a disease tells us how many new cases one case will infect. It depends on many factors, but gives us an idea of how the disease is progressing. When R is less than one we expect the outbreak to die out and when R is greater than one we expect the outbreak to continue. The larger R is the more cases we would expect in the future. The estimation of R above is based on work by <a href="https://www.ncbi.nlm.nih.gov/pubmed/24043437"> Cori et al 2013</a> </p>
+	The reproductive number, \(R\),  of a disease tells us how many new cases one case will infect. It depends on many factors, but gives us an idea of how the disease is progressing. When R is less than one we expect the outbreak to die out, and when R is greater than one we expect the outbreak to continue. The larger R is the more cases we would expect in the future. The estimation of R above is based on work by <a href="https://www.ncbi.nlm.nih.gov/pubmed/24043437"> Cori et al 2013</a> </p>
       
       <p> We use the mathematical model of the disease to predict the expected number of cases of Ebola over the next 3 weeks. We take the latest estimated reproduction number and use that to simulate 1000 possible trajectories for outbreak over the next three weeks. The summary of the simulations is shown in the chart above. </p>
 
       
       
-      <h2> Information about the Ebola outbreak </h2>
+      <h2> Information about the Ebola Outbreak </h2>
       <ul>
 	<li> <a href="http://who.maps.arcgis.com/apps/opsdashboard/index.html#/f9003796864241b99d21474025f3667e"> Ministry of Health Dashboard </a></li>
 	<li> <a href="http://www.who.int/csr/don/18-october-2018-ebola-drc/en/" > WHO Disease Outbreak news </a></li>
@@ -61,11 +61,11 @@
       
       <h2> Mathematical Model </h2>
       <p>
-      The mathematical model used to estimate \(R\) and to predict future cases of Ebola is based on calculating a rate of expected cases every day and then using a <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution </a> to estimate the number of cases. See references below for more information. The daily expected rate, \(\lambda_t\), changes over time and is calculated from the <a href="https://en.wikipedia.org/wiki/Basic_reproduction_number"> reproduction number</a> and the <a href="https://en.wikipedia.org/wiki/Force_of_infection"> force of infection </a>.
+      The mathematical model used to estimate \(R\) and to predict future cases of Ebola is based on calculating a rate of expected cases every day and then using a <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution </a> to estimate the number of cases (see references below for more information). The daily expected rate, \(\lambda_t\), changes over time and is calculated from the <a href="https://en.wikipedia.org/wiki/Basic_reproduction_number"> reproduction number</a> and the <a href="https://en.wikipedia.org/wiki/Force_of_infection"> force of infection </a>.
 
       $$ \lambda_t = R_t \sum_s I_s w_{t - s}, $$
-	where \(I_s\) is the incidence rate at day \(s\) and  and \(w\) is the <a href="https://en.wikipedia.org/wiki/Serial_interval"> serial interval distribution </a>. The serial interval is the time from the onset of disease in the primary case until the onset in the secondary case. As this time is not the same for every case, we model it with a probability distribution. From previous data on Ebola we use a <a href="https://en.wikipedia.org/wiki/Gamma_distribution"> Gamma Distribution </a> with mean of about 15 days and a standard deviation of about 9 days to model the serial interval distribution. <br />
-	When we want to estimate \(R_t\) we calculate \( \sum_s I_s w_{t - s} \) for each day in the outbreak and use a Baysiean procedure to calculate the most likely value and creadible region for \(R_t\). To make the estimate less noisy the values are calculated for a week and not for every day. For the forecast we assume that the last value of \(R_t\) will stay constant for the next three weeks and we use the model to predict the expected number of cases. 
+	where \(I_s\) is the incidence rate at day \(s\) and \(w\) is the <a href="https://en.wikipedia.org/wiki/Serial_interval"> serial interval distribution </a>. The serial interval is the time from the onset of disease in the primary case until the onset in the secondary case. As this time is not the same for every case, we model it with a probability distribution. From previous data on Ebola we use a <a href="https://en.wikipedia.org/wiki/Gamma_distribution"> Gamma Distribution </a> with mean of about 15 days and a standard deviation of about 9 days to model the serial interval distribution. <br />
+	When we want to estimate \(R_t\) we calculate \( \sum_s I_s w_{t - s} \) for each day in the outbreak and use a Bayesian procedure to calculate the most likely value and credible region for \(R_t\). To make the estimate less noisy, the values are calculated for a week and not for every day. For the forecast we assume that the last value of \(R_t\) will stay constant for the next three weeks and we use the model to predict the expected number of cases. 
 
 	
 
@@ -77,7 +77,7 @@
 	  <li> <a href="https://www.ncbi.nlm.nih.gov/pubmed/24043437"> Paper describing the model and how to estimate R by Cori et al. 2013</a> </li>
 	  <li> <a href="https://thibautjombart.netlify.com/post/ebola_simulations_2018/"> Blog post describing the model with R code by Thibaut Jombart </a></li>
 	  <li> <a href="https://www.reconlearn.org/post/simulated-evd-early.html"> RECON Learn outbreak investigation for Ebola </a></li>
-	    <li> <a href="https://www.repidemicsconsortium.org/projects/"> RECON R packages that implement a similar model (any much more functionality) </a></li>
+	    <li> <a href="https://www.repidemicsconsortium.org/projects/"> RECON R packages that implement a similar model (and much more functionality) </a></li>
 	</ul>
 	
 	
