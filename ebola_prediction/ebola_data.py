@@ -21,7 +21,7 @@ def get_incidence(cumulative_cases):
     onset_dates = []
     prev = 0
     for date, n_cases in cumulative_cases.iteritems():
-        new_cases_t = n_cases - prev
+        new_cases_t = int(n_cases - prev)
         onset_dates += [date]*new_cases_t
         prev += new_cases_t
 
