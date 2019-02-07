@@ -40,6 +40,7 @@ def get_incidence(cumulative_cases):
 
 def get_and_predict():
     print("Get and predict for ebola")
+    
     engine = create_engine(DATABASE_URL)
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -86,10 +87,11 @@ def get_and_predict():
     predictions["cumulative_incidence"] = np.mean(cum_sims, axis=0)
     predictions["cumulative_incidence_upper"] = np.quantile(cum_sims, 0.95,axis=0)
     predictions["cumulative_incidence_lower"] = np.quantile(cum_sims,0.05, axis=0)
-    
+
     results.to_sql("estimate_r", engine, if_exists="replace")
     predictions.to_sql("predictions", engine, if_exists="replace")
 
+    
     session.add(DataSource(
         update_time=latest_update_date,
         data=json.dumps({"cases_by_time": "cases_by_time",
@@ -144,6 +146,11 @@ class EbolaWrapper():
     
     def predicted_cases(self):
         data = self.predictions
+
+        date = datetime.date.today()
+
+        data = data[data.date > date - datetime.timedelta(days=7)]
+        
         line = alt.Chart(data).mark_line().encode(
             x='date',
             y='cumulative_incidence'
@@ -153,7 +160,8 @@ class EbolaWrapper():
             title="Predicted Number of Ebola Cases",
             width=500, height=300).mark_area(opacity=0.3).encode(
                 x=alt.Y('date', axis=alt.Axis(title='Date Reported')),
-                y=alt.Y('cumulative_incidence_lower', axis=alt.Axis(title="Number")),
+                y=alt.Y('cumulative_incidence_lower', axis=alt.Axis(title="Number"),
+                        scale=alt.Scale(domain=[data["cumulative_incidence"].min() - 10,data["cumulative_incidence_upper"].max() + 10])),
                 y2='cumulative_incidence_upper'
             )
 
@@ -163,25 +171,31 @@ class EbolaWrapper():
         data = self.cases_by_time
         data["cfr"] = data["total_deaths"] / data["total_cases"] * 100
         chart = alt.Chart(
-            data, title="Case Fatality Ratio", width=500, height=300).mark_circle().encode(
+            data, title="Case Fatality Ratio", width=500, height=300).mark_circle(clip=True).encode(
                 alt.X("report_date:T", axis=alt.Axis(title='Date Reported')),
-                alt.Y('cfr:Q', axis=alt.Axis(title='Case Fatality Ratio (CFR) %'),scale=alt.Scale(domain=[50,100])),
+                alt.Y('cfr:Q', axis=alt.Axis(title='Cumulative Case Fatality Ratio (CFR) %'),scale=alt.Scale(domain=[50,100])),
         )
         return chart
 
     def chart_estimated_r(self):
         data = self.estimated_r[(self.estimated_r["estimated_r"] > 0) & (self.estimated_r["estimated_r"] < 20)]
+        
         line = alt.Chart(data).mark_line().encode(
             x='date',
             y='estimated_r'
+         
         )
 
         confidence_interval = alt.Chart(
             data, title="Estimated Reproduction Number",
             width=500, height=300).mark_area(opacity=0.3).encode(
-                x=alt.Y('date', axis=alt.Axis(title='Date Reported')),
+                x=alt.X('date', axis=alt.Axis(title='Date Reported')),
                 y=alt.Y('estimated_r_lower', axis=alt.Axis(title="Estimated R")),
-                y2='estimated_r_upper'
+                y2='estimated_r_upper',
+                tooltip=[ alt.Tooltip("estimated_r", format=".2f", title="Estimated R"),
+                         alt.Tooltip("estimated_r_upper", format=".2f", title="Upper limit"),
+                         alt.Tooltip("estimated_r_lower", format=".2f", title="Lower limit")]
+
             )
         
         return confidence_interval + line
